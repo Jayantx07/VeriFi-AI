@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "type": "VERIFI_AUTHORIZATION_AUDIT_LOG",
+  "sealed_at": "2026-10-09T10:13:59.280565+00:00",
+  "transaction": {
+    "transaction_id": "tx_90182",
+    "requester_email": "finance-director@enterprise.com",
+    "beneficiary_name": "Apex Holdings Offshore Ltd",
+    "beneficiary_iban": "GB29NWBK60161331926819",
+    "amount": 420000.0,
+    "currency": "USD",
+    "reference": "Acquisition Escrow Q3",
+    "timestamp": "2026-10-09T10:13:49.062985+00:00"
+  },
+  "risk_assessment": {
+    "initial_risk_score": 45.0,
+    "resolution": "STEP_UP_AUTHORIZED_VIA_FIDO2_WEBAUTHN",
+    "authenticator_id": "passkey_cred_1791540839250",
+    "authorized_by": "finance-director@enterprise.com",
+    "verification_type": "userPresenceAndVerification"
+  },
+  "seal_hash": "372b040de2ce580707ed934ea94fbf36a6cf80f6c3cef2d903fc4127485f0de5"
+}

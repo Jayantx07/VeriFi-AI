@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "type": "VERIFI_AUTHORIZATION_AUDIT_LOG",
+  "sealed_at": "2026-10-08T10:47:35.265681+00:00",
+  "transaction": {
+    "transaction_id": "tx_test_hold_001",
+    "requester_email": "treasurer@enterprise.com",
+    "beneficiary_name": "Apex Offshore Holdings",
+    "beneficiary_iban": "GB29NWBK60161331926819",
+    "amount": 350000.0,
+    "currency": "USD",
+    "reference": "Acquisition Escrow Q3",
+    "timestamp": "2026-10-08T10:47:35.265537+00:00"
+  },
+  "risk_assessment": {
+    "risk_score": 100.0,
+    "status": "hold",
+    "risk_factors": [
+      "High-value transaction ($350,000.00) exceeding risk threshold",
+      "High-risk beneficiary nomenclature: 'Apex Offshore Holdings'",
+      "Correlated email with authentication failure (SPF: fail, DKIM: fail) targeting requester",
+      "Correlated email exhibits coercive secrecy and urgency (score: 1.00)",
+      "Correlated audio call with 88.0% synthetic voice probability from 'CEO Clone'",
+      "CRITICAL: Coordinated multimodal BEC assault detected (simultaneous spoofed email & synthetic call)"
+    ],
+    "reason": "Automated fraud hold due to high risk multi-vector correlation"
+  },
+  "seal_hash": "aeef7ec69407c3aad0cb542467cdab8a521faa70a088218aab70d0903e186aa1"
+}
