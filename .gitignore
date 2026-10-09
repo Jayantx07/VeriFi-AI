@@ -1,0 +1,10 @@
+# Launch-film render intermediates (regenerate with brag-output/work/render.mjs + score.py)
+brag-output/work/frames/
+brag-output/work/sheets/
+brag-output/work/stills/
+brag-output/work/score.wav
+node_modules/
+
+# Local agent skill installs
+.agents/
+skills-lock.json

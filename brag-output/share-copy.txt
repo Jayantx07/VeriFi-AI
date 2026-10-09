@@ -1,0 +1,3 @@
+The deepfake CFO fooled the detector. The ₹5 crore still didn't move. VeriFi AI traces where a payee account came from and asks the real CFO to confirm on their own phone with a passkey, so a forged instruction can't release money.
+
+(Track 03 concept · synthetic data)

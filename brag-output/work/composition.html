@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VeriFi AI · "The Instruction"</title>
+<!--
+  Launch film composition. One hero object, the payment instruction slip (#slip), stays on screen
+  for the whole film; scenes are props that appear around it. Every property is a pure function of
+  time: window.render(t), t in seconds (0 → DUR). Rendered by render.mjs, scored by score.py.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Special+Elite&family=Saira+Stencil+One&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0B0A; --paper:#F4EFE4; --white:#FBF8F1; --manila:#E2CC9A; --manila2:#CDB27A;
+  --ink:#211C17; --muted:#6F5E45; --red:#C41E24; --red2:#E5383F; --bone:#E9E2D3; --dim:#9C9283;
+  --head:'Archivo Narrow',sans-serif; --type:'Special Elite',monospace; --stencil:'Saira Stencil One',sans-serif; --hand:'Caveat',cursive;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:var(--head);color:var(--bone);
+  background:radial-gradient(ellipse at 50% 42%,#221c18 0%,#0d0b0a 68%)}
+.abs{position:absolute}
+.lbl{font-family:var(--type);letter-spacing:.08em;text-transform:uppercase}
+.r{color:var(--red2)}
+.prop{position:absolute;opacity:0}
+.stamp{position:absolute;border:7px solid var(--red);color:var(--red);font-family:var(--stencil);line-height:1;padding:8px 22px 3px;white-space:nowrap;text-align:center;mix-blend-mode:multiply}
+.pin::before{content:"";position:absolute;left:50%;top:-11px;width:22px;height:22px;margin-left:-11px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#ff6a6a,var(--red));box-shadow:0 3px 4px rgba(0,0,0,.45);z-index:3}
+
+/* ═════ THE SLIP (hero) · authored at 760×440, positioned by render() ═════ */
+#slip{position:absolute;left:0;top:0;width:760px;height:440px;background:var(--white);color:var(--ink);
+  box-shadow:0 30px 70px rgba(0,0,0,.55);transform-origin:50% 50%;z-index:20;opacity:0}
+#slip .hd{height:58px;background:var(--ink);color:var(--bone);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+#slip .hd .lbl{font-size:18px;letter-spacing:.12em}
+#pill{font-family:var(--type);font-size:17px;letter-spacing:.08em;padding:5px 14px;border-radius:20px;background:#4a423a;color:var(--bone)}
+#slip .bd{padding:14px 30px 0}
+.row{display:grid;grid-template-columns:200px 1fr;align-items:baseline;padding:11px 0;border-bottom:1px solid rgba(33,28,23,.12);min-height:58px}
+.row .k{font-family:var(--type);font-size:17px;color:var(--muted);letter-spacing:.06em}
+.row .v{font-size:30px;font-weight:600;white-space:nowrap}
+#vAmt{font-size:42px;font-weight:700}
+#slip .ft{position:absolute;left:30px;right:30px;bottom:18px;height:72px;display:flex;align-items:center;justify-content:space-between}
+#sigbox{width:400px;height:66px;border:2px dashed rgba(33,28,23,.3);position:relative;padding:6px 12px}
+#sigbox .k{font-family:var(--type);font-size:14px;color:var(--muted)}
+#sig{position:absolute;left:12px;top:22px;font-family:var(--hand);font-size:36px;font-weight:700;color:var(--red);white-space:nowrap;opacity:0}
+#relbtn{width:200px;height:62px;border-radius:8px;background:var(--red);color:#fff;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;opacity:0}
+#relfill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(0,0,0,.3)}
+#reltxt{position:relative}
+/* things that attach to the slip */
+#detTag{position:absolute;left:-40px;top:-46px;background:#E8F1E8;color:#1f4d34;border:2px solid #2e6b49;padding:8px 16px;font-family:var(--type);font-size:20px;transform:rotate(-6deg);opacity:0;box-shadow:0 6px 12px rgba(0,0,0,.25)}
+#detTag::after{content:"";position:absolute;left:-8px;right:-8px;top:50%;height:5px;background:var(--red);transform:scaleX(var(--strike,0));transform-origin:left}
+#heldSt{left:478px;top:300px;font-size:92px;transform:rotate(-12deg);opacity:0}
+#hfrSt{left:372px;top:304px;font-size:42px;transform:rotate(-9deg);opacity:0}
+#riskTag{position:absolute;right:-30px;top:-40px;background:var(--ink);color:var(--bone);padding:10px 18px;font-family:var(--type);font-size:20px;transform:rotate(5deg);opacity:0;box-shadow:0 6px 12px rgba(0,0,0,.3)}
+#riskTag b{color:var(--red2);font-weight:400;font-size:26px}
+#filedTag{position:absolute;right:-20px;bottom:-34px;background:var(--manila);color:var(--ink);padding:8px 18px;font-family:var(--type);font-size:22px;transform:rotate(-3deg);opacity:0}
+
+/* ═════ PROPS ═════ */
+#call{left:110px;top:200px;width:760px;height:470px;border-radius:16px;background:radial-gradient(ellipse at 50% 35%,#3b4150,#1c1f27 70%);overflow:hidden;border:1px solid #2a2c33}
+#call svg{position:absolute;left:50%;top:40px;width:340px;height:430px;margin-left:-170px}
+#call .tag{position:absolute;left:18px;bottom:16px;font-size:24px;font-weight:600;color:#fff;background:rgba(0,0,0,.55);padding:6px 14px;border-radius:7px}
+#call .live{position:absolute;left:18px;top:16px;font-family:var(--type);font-size:17px;color:#fff;background:rgba(0,0,0,.45);padding:5px 12px;border-radius:6px}
+#call .live b{color:#ff4b4b}
+#say{left:110px;top:700px;width:760px;text-align:center;font-size:34px;color:#fff}
+#say span{background:rgba(0,0,0,.55);padding:6px 16px;border-radius:6px}
+#det{left:150px;top:220px;width:680px;height:470px;background:var(--paper);color:var(--ink);padding:30px 36px;box-shadow:0 20px 40px rgba(0,0,0,.45)}
+#det .lbl{font-size:19px;color:var(--muted)}
+#det .sim{position:absolute;right:22px;top:24px;font-family:var(--type);font-size:14px;color:var(--red);border:2px solid var(--red);padding:2px 8px}
+#gauge{position:absolute;left:70px;top:80px;width:540px;height:300px}
+#detnum{position:absolute;left:0;right:0;top:330px;text-align:center;font-size:84px;font-weight:700}
+#bank{left:1700px;top:120px;width:220px;height:700px;background:linear-gradient(90deg,#141110,#050404);border-left:3px solid #3a332d}
+#bank .lbl{position:absolute;left:40px;top:320px;font-size:30px;color:var(--dim);letter-spacing:.2em}
+#gate{left:1500px;top:90px;width:96px;height:760px;background:repeating-linear-gradient(180deg,var(--red) 0 60px,#8f1218 60px 120px);box-shadow:0 0 50px rgba(229,56,63,.45);z-index:21}
+#gate span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-90deg);font-family:var(--stencil);font-size:44px;color:#fff;white-space:nowrap;letter-spacing:.1em}
+#cursor{left:0;top:0;width:54px;height:54px;z-index:30}
+.ev{position:absolute;width:430px;padding:18px 22px;background:var(--paper);color:var(--ink);box-shadow:0 12px 24px rgba(0,0,0,.35)}
+.ev .lbl{font-size:16px;color:var(--muted);display:block;margin-bottom:6px}
+.ev b{display:block;font-size:30px;line-height:1.1}
+.ev span{font-size:21px;color:#4a3f32}
+#strsvg{left:0;top:0;width:1920px;height:1080px;z-index:25;overflow:visible;pointer-events:none}
+#strsvg path{fill:none;stroke:#C41E24;stroke-width:4;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+#phone{left:530px;top:50px;width:460px;height:820px;border-radius:60px;background:#141210;box-shadow:0 40px 80px rgba(0,0,0,.6),inset 0 0 0 2px #3a332d;z-index:15}
+#pscreen{position:absolute;inset:18px;border-radius:44px;background:#EDE7DA;overflow:hidden}
+#pscreen .notch{position:absolute;left:50%;top:12px;width:120px;height:30px;margin-left:-60px;border-radius:18px;background:#141210}
+#pscreen .app{position:absolute;left:0;right:0;top:64px;text-align:center;font-family:var(--type);font-size:16px;color:var(--red);letter-spacing:.06em}
+#pask{position:absolute;left:0;right:0;top:470px;text-align:center;font-size:30px;font-weight:700;color:var(--ink)}
+#pbtns{position:absolute;left:26px;right:26px;top:530px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#pbtns div{text-align:center;padding:18px 0;border-radius:34px;font-size:28px;font-weight:700}
+#deny{background:var(--red);color:#fff}
+#approve{border:3px solid var(--ink);color:var(--ink)}
+#fp{position:absolute;left:50%;top:640px;width:90px;height:110px;margin-left:-45px;opacity:0}
+#finger{left:0;top:0;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;background:rgba(255,255,255,.35);border:3px solid rgba(255,255,255,.9);z-index:31}
+#ripple{left:0;top:0;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;border:4px solid rgba(255,255,255,.9);z-index:31}
+.note{position:absolute;font-family:var(--hand);font-weight:700;font-size:48px;color:#F2D58A;white-space:nowrap}
+#fback{left:520px;top:420px;width:880px;height:440px;background:var(--manila2);border-radius:10px 10px 6px 6px;z-index:18}
+#ffront{left:500px;top:560px;width:920px;height:320px;background:linear-gradient(170deg,var(--manila),var(--manila2));border-radius:6px;z-index:22;box-shadow:0 -8px 24px rgba(0,0,0,.35);padding:28px 40px;color:var(--ink)}
+#ffront .lbl{font-size:22px;color:var(--muted)}
+#ffront h3{font-size:56px;font-weight:700;margin-top:8px}
+#ffront h3 span{color:var(--red)}
+#seal{right:44px;top:30px;width:150px;height:150px;border-radius:50%;border:6px solid #2e6b49;color:#2e6b49;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--type);font-size:16px;text-align:center;line-height:1.2;transform:rotate(-12deg)}
+#seal b{font-size:40px;font-family:var(--head)}
+.mini{position:absolute;left:0;top:0;width:420px;height:140px;background:var(--white);color:var(--ink);box-shadow:0 14px 30px rgba(0,0,0,.45);padding:16px 22px;z-index:19;opacity:0}
+.mini .lbl{font-size:15px;color:var(--muted)}
+.mini b{display:block;font-size:30px;margin-top:4px}
+.mini span{font-size:24px;color:#4a3f32}
+.mini i{position:absolute;right:16px;top:14px;font-style:normal;font-family:var(--type);font-size:17px;color:#2e6b49;border:2px solid #2e6b49;padding:2px 10px;opacity:0}
+#lane{left:960px;top:470px;width:0;height:330px;border-left:4px dashed rgba(229,56,63,.8)}
+#lane span{position:absolute;left:14px;top:-34px;font-family:var(--type);font-size:20px;color:var(--red2);white-space:nowrap}
+#wm{left:800px;top:395px;font-size:160px;font-weight:700;color:#fff;line-height:1;white-space:nowrap}
+#steps{left:0;right:0;top:585px;text-align:center;font-family:var(--type);font-size:30px;letter-spacing:.24em;color:var(--bone)}
+#steps b{color:var(--red2);font-weight:400}
+#foot{left:0;right:0;top:1000px;text-align:center;font-family:var(--type);font-size:19px;letter-spacing:.12em;color:#7d7466}
+
+/* ═════ CAPTIONS (one at a time, fixed position) ═════ */
+.cap{position:absolute;left:0;right:0;top:905px;text-align:center;font-size:62px;font-weight:600;color:#fff;opacity:0;z-index:40;text-shadow:0 4px 20px rgba(0,0,0,.6)}
+.cap .r{color:var(--red2)}
+#tracker{left:0;right:0;top:40px;text-align:center;font-family:var(--type);font-size:24px;letter-spacing:.18em;z-index:40;opacity:0}
+#tracker span{color:#5d554b;margin:0 22px}
+#tracker span.on{color:var(--bone);border-bottom:3px solid var(--red2);padding-bottom:6px}
+#bug{right:40px;bottom:26px;font-family:var(--type);font-size:16px;letter-spacing:.12em;color:#7d7466;z-index:40;opacity:0}
+#vignette{inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);z-index:45}
+#grain{left:0;top:0;width:1920px;height:1080px;pointer-events:none;mix-blend-mode:overlay;opacity:.1;z-index:46}
+#black{inset:0;background:#000;opacity:0;z-index:50}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- ═════ PROPS (appear around the slip) ═════ -->
+<div class="prop" id="call">
+  <svg viewBox="0 0 520 660"><defs><radialGradient id="fg" cx="50%" cy="35%" r="60%"><stop offset="0" stop-color="#8d93a3"/><stop offset="1" stop-color="#454a58"/></radialGradient></defs>
+    <path d="M40 660 C 60 520 150 470 260 470 C 370 470 460 520 480 660 Z" fill="#2b2f3a"/><path d="M200 470 L 260 560 L 320 470 Z" fill="#c9ccd4" opacity=".55"/>
+    <ellipse cx="260" cy="225" rx="146" ry="140" fill="#23262f"/><ellipse cx="260" cy="280" rx="130" ry="160" fill="url(#fg)"/>
+    <path d="M132 250 C 140 150 200 118 260 118 C 330 118 382 160 388 250 C 360 190 300 175 260 178 C 210 180 160 195 132 250 Z" fill="#23262f"/></svg>
+  <div class="live"><b>●</b> LIVE · ZOOM</div>
+  <div class="tag">Rajesh Mehta (CFO)</div>
+</div>
+<div class="prop" id="say"><span>“Pay ₹5 crore today. Tell no one.”</span></div>
+
+<div class="prop" id="det">
+  <div class="lbl">Deepfake detector · the call</div><div class="sim">SIMULATED</div>
+  <svg id="gauge" viewBox="0 0 600 330">
+    <path d="M60 300 A 240 240 0 0 1 300 60" fill="none" stroke="#2e6b49" stroke-width="34" opacity=".4"/>
+    <path d="M300 60 A 240 240 0 0 1 540 300" fill="none" stroke="#C41E24" stroke-width="34" opacity=".4"/>
+    <text x="64" y="330" font-family="Special Elite" font-size="22" fill="#6F5E45">REAL</text>
+    <text x="482" y="330" font-family="Special Elite" font-size="22" fill="#6F5E45">FAKE</text>
+    <g id="needle"><line x1="300" y1="300" x2="300" y2="92" stroke="#211C17" stroke-width="8" stroke-linecap="round"/></g>
+    <circle cx="300" cy="300" r="18" fill="#211C17"/></svg>
+  <div id="detnum">0.00</div>
+</div>
+
+<div class="prop" id="bank"><div class="lbl">BANK →</div></div>
+
+<div class="ev pin prop" id="evE" style="left:150px;top:300px"><span class="lbl">Email · 2 hours ago</span><b>“Pay today. Tell no one.”</b><span>this account first appears here</span></div>
+<div class="ev pin prop" id="evD" style="left:150px;top:90px"><span class="lbl">Sender domain</span><b>kestrelinfra-group.co</b><span>lookalike · registered 4 days ago</span></div>
+<div class="ev pin prop" id="evC" style="left:150px;top:560px"><span class="lbl">Video call</span><b>External “CFO”</b><span>joined from outside the company</span></div>
+
+<div class="prop" id="phone"><div id="pscreen"><div class="notch"></div><div class="app">VERIFI · CONFIRMATION REQUESTED</div>
+  <div id="pask">Did you ask for this payment?</div>
+  <div id="pbtns"><div id="deny">Deny</div><div id="approve">Approve</div></div>
+  <svg id="fp" viewBox="0 0 100 120" fill="none" stroke="#C41E24" stroke-width="4" stroke-linecap="round"><path d="M20 60c0-17 13-30 30-30s30 13 30 30"/><path d="M28 70c0-14 10-25 22-25s22 11 22 25v10"/><path d="M36 95V70c0-8 6-14 14-14s14 6 14 14v18"/><path d="M50 70v32"/><path d="M12 48C18 28 33 16 50 16s32 12 38 32"/></svg>
+</div></div>
+<div class="note prop" id="n1" style="left:1060px;top:250px">← this exact payment</div>
+<div class="note prop" id="n2" style="left:1060px;top:420px">← signed with a passkey</div>
+
+<div class="prop" id="fback"></div>
+
+<!-- ═════ THE SLIP ═════ -->
+<div id="slip">
+  <div class="hd"><span class="lbl">Payment instruction · RTGS</span><span id="pill">PENDING</span></div>
+  <div class="bd">
+    <div class="row"><span class="k">PAY</span><span class="v" id="vPay"></span></div>
+    <div class="row"><span class="k">AMOUNT</span><span class="v" id="vAmt"></span></div>
+    <div class="row"><span class="k">ACCOUNT</span><span class="v" id="vAcc"></span></div>
+    <div class="row"><span class="k">INSTRUCTED BY</span><span class="v" id="vBy"></span></div>
+  </div>
+  <div class="ft">
+    <div id="sigbox"><span class="k">AUTHORISED BY</span><div id="sig">✗ Denied · R. Mehta (CFO) · passkey ✓</div></div>
+    <div id="relbtn"><div id="relfill"></div><span id="reltxt">Release</span></div>
+  </div>
+  <div id="detTag">DETECTOR: AUTHENTIC 0.12 ✓</div>
+  <div class="stamp" id="heldSt">HELD</div>
+  <div class="stamp" id="hfrSt">HELD FOR REVIEW</div>
+  <div id="riskTag">RISK <b>87.5</b> · CFO MUST CONFIRM</div>
+  <div id="filedTag">FILED · 1930 REPORT ✓</div>
+</div>
+
+<div class="prop" id="ffront"><div class="lbl">Case S1-KESTREL · cybercrime.gov.in / 1930</div><h3>Incident report <span>ready</span></h3>
+  <div class="abs" id="seal"><b>✓</b>SIGNED<br>&amp; CHAINED</div></div>
+<div class="prop" id="gate"><span>VERIFI AI</span></div>
+<div class="prop" id="lane"><span>VERIFI CHECK</span></div>
+<div class="mini" id="m0"><span class="lbl">Instruction · NEFT</span><b>Northwind Cement Ltd</b><span>₹12,40,000 · known vendor</span><i>RELEASED ✓</i></div>
+<div class="mini" id="m1"><span class="lbl">Instruction · RTGS</span><b>Deccan Power Co</b><span>₹48,20,000 · known vendor</span><i>RELEASED ✓</i></div>
+<div class="mini" id="m2"><span class="lbl">Instruction · IMPS</span><b>Saffron Logistics</b><span>₹3,85,500 · known vendor</span><i>RELEASED ✓</i></div>
+<svg class="abs" id="strsvg"><path id="sp1"/><path id="sp2"/></svg>
+<svg class="abs prop" id="cursor" viewBox="0 0 54 54"><path d="M6 4 L6 42 L16 32 L23 48 L30 45 L23 29 L37 29 Z" fill="#fff" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/></svg>
+<div class="abs prop" id="finger"></div><div class="abs prop" id="ripple"></div>
+
+<div class="prop" id="wm">VeriFi AI</div>
+<div class="prop" id="steps">TRACE <b>→</b> DECIDE <b>→</b> CONFIRM <b>→</b> RESPOND</div>
+<div class="prop" id="foot">TRACK 03 · CONCEPT PROTOTYPE · SYNTHETIC DATA</div>
+
+<!-- ═════ CAPTIONS ═════ -->
+<div class="cap" data-a="1.2" data-b="5.0">Every payment fraud ends with <span class="r">an instruction like this.</span></div>
+<div class="cap" data-a="5.9" data-b="8.3">This one came from <span class="r">a video call with the CFO.</span></div>
+<div class="cap" data-a="8.7" data-b="10.45">The CFO was <span class="r">a deepfake.</span></div>
+<div class="cap" data-a="11.1" data-b="15.8">The deepfake detector <span class="r">said it was real.</span></div>
+<div class="cap" data-a="16.4" data-b="21.1">One click, and <span class="r">₹5 crore</span> starts to leave.</div>
+<div class="cap" data-a="22.0" data-b="24.9">Then <span class="r">VeriFi AI</span> stops it.</div>
+<div class="cap" data-a="25.3" data-b="29.1">It doesn’t judge the call. <span class="r">It checks the instruction.</span></div>
+<div class="cap" data-a="29.9" data-b="34.45">It traces <span class="r">where this account came from.</span></div>
+<div class="cap" data-a="35.1" data-b="39.8">It asks <span class="r">the real CFO</span>, on their own phone.</div>
+<div class="cap" data-a="40.5" data-b="45.1">The money stays. <span class="r">The cybercrime report is ready.</span></div>
+<div class="cap" data-a="45.8" data-b="50.45">Everyday payments? <span class="r">They go straight through.</span></div>
+<div class="cap" data-a="51.0" data-b="61.4" style="top:760px;color:var(--dim)">Detectors tell you a call might be fake.</div>
+<div class="cap" data-a="52.6" data-b="61.4" style="top:848px">VeriFi makes sure money <span class="r">can’t move</span> because of it.</div>
+
+<div class="abs" id="tracker"><span id="k1">01 TRACE</span><span id="k2">02 CONFIRM</span><span id="k3">03 RESPOND</span></div>
+<div class="abs" id="bug">CONCEPT · SYNTHETIC DATA</div>
+<div class="abs" id="vignette"></div>
+<canvas class="abs" id="grain" width="960" height="540"></canvas>
+<div class="abs" id="black"></div>
+</div>
+
+<script>
+const DUR = 61.33;
+/* ─────────── pure time helpers ─────────── */
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, a, b) => cl((t - a) / (b - a));
+const eo = x => 1 - Math.pow(1 - x, 3);
+const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const lerp = (a, b, x) => a + (b - a) * x;
+const hash = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const $ = id => document.getElementById(id);
+function kf(t, keys) {                                   // ease-in-out keyframes [[t, v], …]
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) if (t <= keys[i][0]) {
+    const [t0, v0] = keys[i - 1], [t1, v1] = keys[i];
+    return lerp(v0, v1, eio((t - t0) / (t1 - t0)));
+  }
+  return keys[keys.length - 1][1];
+}
+function win(t, a, b, fi = .5, fo = .4) {                // visibility window with fades
+  if (t < a || t > b) return 0;
+  return Math.min(fi ? P(t, a, a + fi) : 1, fo ? 1 - P(t, b - fo, b) : 1);
+}
+function stampIn(el, t, at, rot, s0 = 2.2) {             // rubber-stamp slam
+  const p = P(t, at, at + .16);
+  el.style.opacity = cl(p * 2.5) * .92;
+  el.style.transform = `rotate(${rot}deg) scale(${lerp(s0, 1, eio(p))})`;
+}
+function typed(el, text, t, a, b) {
+  const n = Math.round(text.length * P(t, a, b));
+  el.textContent = text.slice(0, n) + (n > 0 && n < text.length ? '▌' : '');
+}
+
+/* ─────────── hero slip path (centre x, centre y, scale, rotation) ─────────── */
+const SX = [[0, 960], [5.6, 960], [6.5, 1300], [15.9, 1300], [16.7, 960], [18.6, 960], [21.25, 1360], [21.45, 1160], [21.75, 1190], [26.9, 1190], [27.7, 960], [29.4, 960], [30.1, 1240], [34.6, 1240], [35.4, 760], [39.9, 760], [40.6, 960], [42.0, 960], [42.8, 960], [45.2, 960], [45.9, 360], [50.6, 360], [51.3, 960], [55.7, 960], [56.4, 660], [62, 660]];
+const SY = [[0, 420], [29.4, 420], [30.1, 440], [34.6, 440], [35.4, 330], [39.9, 330], [40.6, 400], [42.0, 400], [42.8, 432], [45.2, 432], [45.9, 260], [50.6, 260], [51.3, 330], [55.7, 330], [56.4, 470], [62, 470]];
+const SS = [[0, 1], [5.6, 1], [6.5, .85], [15.9, .85], [16.7, 1], [29.4, 1], [30.1, .85], [34.6, .85], [35.4, .5], [39.9, .5], [40.6, .9], [45.2, .9], [45.9, .5], [50.6, .5], [51.3, .75], [55.7, .75], [56.4, .2], [62, .2]];
+const SR = [[0, -1.5], [5.6, -1.5], [6.5, 1], [15.9, 1], [16.7, 0], [21.25, 0], [21.45, -3], [21.75, -2], [29.4, -2], [30.1, 1.5], [34.6, 1.5], [35.4, 0], [39.9, 0], [40.6, -1], [45.2, -1], [45.9, -4], [50.6, -4], [51.3, -2], [55.7, -2], [56.4, 0], [62, 0]];
+
+/* grain tiles */
+const GR = [];
+for (let k = 0; k < 4; k++) {
+  const c = document.createElement('canvas'); c.width = 960; c.height = 540;
+  const g = c.getContext('2d'), im = g.createImageData(960, 540); let s = 1234 + k * 999;
+  for (let i = 0; i < im.data.length; i += 4) { s = (s * 1664525 + 1013904223) >>> 0; const v = s >>> 24; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
+  g.putImageData(im, 0, 0); GR.push(c);
+}
+const CAPS = [...document.querySelectorAll('.cap')];
+const center = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2, r]; };
+
+/* ─────────── render(t) ─────────── */
+window.render = function (t) {
+  const frame = Math.round(t * 30);
+  $('stage').style.transform = 'none';
+
+  /* — hero slip — */
+  const drop = eo(P(t, .15, .8));
+  const x = kf(t, SX), y = kf(t, SY) - (1 - drop) * 70, s = kf(t, SS), r = kf(t, SR);
+  const slip = $('slip');
+  slip.style.opacity = drop;
+  slip.style.transform = `translate(${x - 380}px, ${y - 220}px) rotate(${r}deg) scale(${s})`;
+  typed($('vPay'), 'Meridian Advisory LLP', t, .8, 1.5);
+  typed($('vAmt'), '₹5,00,00,000', t, 1.6, 2.2);
+  typed($('vAcc'), '••••7812 · HDFC0001234', t, 2.3, 3.0);
+  typed($('vBy'), 'Rajesh Mehta (CFO) · video call', t, 6.6, 7.6);
+  const pill = $('pill');
+  const st = t < 16.7 ? ['PENDING', '#4a423a', '#E9E2D3'] : t < 18.45 ? ['READY', '#4a423a', '#E9E2D3'] : t < 21.33 ? ['RELEASING…', '#B8860B', '#fff']
+    : t < 38.7 ? ['HELD', '#C41E24', '#fff'] : t < 40.9 ? ['DENIED BY CFO', '#C41E24', '#fff'] : ['HELD FOR REVIEW', '#C41E24', '#fff'];
+  pill.textContent = st[0]; pill.style.background = st[1]; pill.style.color = st[2];
+  pill.style.opacity = st[0] === 'RELEASING…' ? .55 + .45 * Math.abs(Math.sin(t * 6)) : 1;
+  // release button (scene 4)
+  $('relbtn').style.opacity = win(t, 16.6, 21.6, .4, .3);
+  const pressed = t >= 18.45;
+  $('reltxt').textContent = pressed ? 'Sending…' : 'Release';
+  $('relfill').style.width = (pressed ? 90 * P(t, 18.5, 21.25) : 0) + '%';
+  $('relbtn').style.transform = `scale(${t > 18.38 && t < 18.55 ? .94 : 1})`;
+  // attachments
+  const dt = P(t, 13.2, 13.5);
+  $('detTag').style.opacity = dt * (1 - P(t, 29.2, 29.6));
+  $('detTag').style.transform = `rotate(-6deg) translateY(${(1 - eo(dt)) * -30}px)`;
+  $('detTag').style.setProperty('--strike', eio(P(t, 25.6, 26.2)));
+  stampIn($('heldSt'), t, 21.5, -8);
+  if (t < 21.5) $('heldSt').style.opacity = 0;
+  if (t > 40.5) $('heldSt').style.opacity = .92 * (1 - P(t, 40.5, 40.8));
+  stampIn($('hfrSt'), t, 40.9, -6);
+  if (t < 40.9) $('hfrSt').style.opacity = 0;
+  const rk = P(t, 32.7, 33.0);
+  $('riskTag').style.opacity = rk * (1 - P(t, 40.4, 40.8));
+  $('riskTag').style.transform = `rotate(5deg) scale(${lerp(1.4, 1, eo(rk))})`;
+  $('sig').style.opacity = P(t, 38.7, 39.1);
+  $('sig').style.clipPath = `inset(0 ${100 - 100 * eo(P(t, 38.7, 39.5))}% 0 0)`;
+  $('filedTag').style.opacity = P(t, 45.9, 46.3) * (1 - P(t, 50.6, 51.0));
+
+  /* — scene 2: the call — */
+  const aC = win(t, 5.5, 10.9, .5, .4);
+  const g = t >= 8.35 && t < 8.95, j = g ? (hash(frame) - .5) * 50 : 0;
+  $('call').style.opacity = aC;
+  $('call').style.transform = `translateX(${(1 - eo(P(t, 5.5, 6.1))) * -60 + j}px)`;
+  $('call').style.filter = g ? `hue-rotate(${hash(frame + 7) * 90 - 45}deg) drop-shadow(${10 + j / 3}px 0 0 rgba(255,40,40,.7)) drop-shadow(${-10 - j / 3}px 0 0 rgba(40,220,255,.6))` : (t > 8.95 ? 'grayscale(.6) brightness(.75)' : 'none');
+  $('say').style.opacity = win(t, 6.0, 10.9, .4, .4);
+
+  /* — scene 3: detector — */
+  $('det').style.opacity = win(t, 10.9, 16.1, .5, .4);
+  const v = kf(t, [[11.5, 0], [11.9, .6], [12.2, .05], [12.5, .2], [12.8, .12]]);
+  $('needle').setAttribute('transform', `rotate(${-90 + 180 * v} 300 300)`);
+  $('detnum').textContent = v.toFixed(2);
+
+  /* — scene 4/5: release, bank, gate — */
+  $('bank').style.opacity = win(t, 16.7, 27.4, .6, .5) * (t > 21.33 ? .45 : 1);
+  const cp = eio(P(t, 17.0, 18.3));
+  const [bx, by] = center($('relbtn'));
+  $('cursor').style.opacity = win(t, 16.9, 19.2, .2, .3);
+  $('cursor').style.transform = `translate(${lerp(1500, bx - 8, cp)}px, ${lerp(980, by - 6, cp)}px) scale(${t > 18.38 && t < 18.55 ? .85 : 1})`;
+  const gp = P(t, 21.15, 21.33), gs = t > 21.33 ? Math.exp(-(t - 21.33) * 10) : 0;
+  $('gate').style.opacity = t < 21.15 ? 0 : 1 - P(t, 26.9, 27.4);
+  $('gate').style.transform = `translateY(${(1 - eio(gp)) * -900}px) translateX(${(hash(frame) - .5) * 26 * gs}px)`;
+
+  /* — scene 6: trace (red string from slip fields to evidence) — */
+  [['evE', 30.2, 1.5], ['evD', 30.9, -2], ['evC', 31.6, -1]].forEach(([id, a, rot]) => {
+    const e = $(id), p = eo(P(t, a, a + .4));
+    e.style.opacity = p * (1 - P(t, 34.4, 34.9));
+    e.style.transform = `translateY(${(1 - p) * -40}px) rotate(${rot}deg)`;
+  });
+  if (t > 30 && t < 35) {
+    const [, ay, ar] = center($('vAcc')), [, by2, br] = center($('vBy'));
+    const pin = id => { const r2 = $(id).getBoundingClientRect(); return [r2.left + r2.width / 2, r2.top + 4]; };
+    const [ex, ey] = pin('evE'), [dx, dy] = pin('evD'), [cx, cy] = pin('evC');
+    const a0 = [ar.left - 8, ay], b0 = [br.left - 8, by2];
+    $('sp1').setAttribute('d', `M${a0[0]} ${a0[1]} Q ${(a0[0] + ex) / 2} ${Math.max(a0[1], ey) + 80} ${ex} ${ey} Q ${ex + 160} ${(ey + dy) / 2} ${dx} ${dy}`);
+    $('sp2').setAttribute('d', `M${b0[0]} ${b0[1]} Q ${(b0[0] + cx) / 2} ${Math.max(b0[1], cy) + 60} ${cx} ${cy}`);
+    [['sp1', 30.4, 31.6], ['sp2', 31.7, 32.4]].forEach(([id, a, b]) => {
+      const p = $(id), L = p.getTotalLength();
+      p.style.strokeDasharray = L; p.style.strokeDashoffset = L * (1 - eio(P(t, a, b)));
+      p.style.opacity = 1 - P(t, 34.4, 34.9);
+    });
+  } else { $('sp1').style.opacity = 0; $('sp2').style.opacity = 0; }
+
+  /* — scene 7: confirm (slip inside the CFO's phone) — */
+  $('phone').style.opacity = win(t, 34.8, 40.3, .5, .4);
+  $('phone').style.transform = `translateY(${(1 - eo(P(t, 34.8, 35.4))) * 160}px)`;
+  $('n1').style.opacity = win(t, 36.1, 40.0, .4, .3);
+  $('n2').style.opacity = win(t, 39.0, 40.1, .3, .25);
+  const [fx, fy] = center($('deny'));
+  const fp = eio(P(t, 36.9, 37.5));
+  $('finger').style.opacity = win(t, 36.9, 38.0, .15, .2);
+  $('finger').style.transform = `translate(${lerp(fx + 140, fx, fp)}px, ${lerp(fy + 220, fy, fp)}px) scale(${t > 37.55 && t < 37.7 ? .82 : 1})`;
+  const rp = P(t, 37.6, 38.1);
+  $('ripple').style.opacity = rp > 0 && rp < 1 ? 1 - rp : 0;
+  $('ripple').style.transform = `translate(${fx}px, ${fy}px) scale(${1 + rp * 2.2})`;
+  $('deny').style.filter = t > 37.6 && t < 37.8 ? 'brightness(.8)' : 'none';
+  $('fp').style.opacity = win(t, 37.8, 38.75, .15, .2) * (.6 + .4 * Math.sin(t * 18));
+
+  /* — scene 8: respond (filed into the 1930 case folder) — */
+  const fo = eo(P(t, 41.8, 42.6)), fOut = 1 - P(t, 45.0, 45.5);
+  $('fback').style.opacity = fo * fOut; $('fback').style.transform = `translateY(${(1 - fo) * 500}px)`;
+  $('ffront').style.opacity = fo * fOut; $('ffront').style.transform = `translateY(${(1 - fo) * 500}px)`;
+  const sl = P(t, 43.5, 43.7);
+  $('seal').style.opacity = sl; $('seal').style.transform = `rotate(-12deg) scale(${lerp(1.8, 1, eo(sl))})`;
+
+  /* — scene 9: everyday payments glide through — */
+  $('lane').style.opacity = win(t, 45.6, 50.7, .5, .4);
+  [46.4, 47.4, 48.4].forEach((a, i) => {
+    const m = $('m' + i), p = P(t, a, a + 2.2);
+    m.style.opacity = p > 0 && p < 1 ? Math.min(P(t, a, a + .2), 1 - P(t, a + 2.0, a + 2.2)) : 0;
+    const mx = lerp(-460, 1960, eio(p));
+    m.style.transform = `translate(${mx}px, ${560 + i * 18}px) rotate(${[-2, 1.5, -1][i]}deg)`;
+    m.querySelector('i').style.opacity = mx + 210 > 960 ? 1 : 0;
+  });
+
+  /* — scene 10: lockup — */
+  const wl = P(t, 56.1, 56.6);
+  $('wm').style.opacity = wl; $('wm').style.transform = `translateX(${(1 - eo(wl)) * 40}px)`;
+  $('steps').style.opacity = P(t, 56.8, 57.3);
+  $('foot').style.opacity = P(t, 57.3, 57.8);
+
+  /* — captions, tracker, overlays — */
+  CAPS.forEach(c => {
+    const a = +c.dataset.a, b = +c.dataset.b;
+    c.style.opacity = win(t, a, b, .5, .35);
+    c.style.transform = `translateY(${(1 - eo(P(t, a, a + .5))) * 24}px)`;
+  });
+  $('tracker').style.opacity = win(t, 29.5, 45.3, .5, .4);
+  $('k1').className = t < 34.67 ? 'on' : ''; $('k2').className = t >= 34.67 && t < 40 ? 'on' : ''; $('k3').className = t >= 40 ? 'on' : '';
+  $('bug').style.opacity = .85 * win(t, 5.5, 50.7, .5, .5);
+  $('black').style.opacity = cl(1 - P(t, 0, .4) + P(t, 60.8, 61.33));
+  $('grain').getContext('2d').drawImage(GR[frame % 4], 0, 0);
+  // camera shake on the gate slam (applied after layout reads above)
+  const gs2 = t > 21.33 ? Math.exp(-(t - 21.33) * 10) : 0;
+  $('stage').style.transform = gs2 > .01 ? `translate(${(hash(frame + 3) - .5) * 18 * gs2}px, ${(hash(frame + 9) - .5) * 18 * gs2}px)` : 'none';
+};
+
+window.ready = (async () => {
+  await Promise.all(['700 50px "Archivo Narrow"', '600 50px "Archivo Narrow"', '50px "Special Elite"', '50px "Saira Stencil One"', '700 50px Caveat'].map(f => document.fonts.load(f)));
+  await document.fonts.ready;
+  window.render(0);
+  return true;
+})();
+</script>
+</body>
+</html>
