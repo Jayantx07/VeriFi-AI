@@ -356,6 +356,107 @@ svg.string path { stroke: var(--red); stroke-width: 3; fill: none; filter: drop-
 .s10 .close p span { color: var(--red); }
 
 /* ===========================================
+   ARCHITECTURAL OVERVIEW (pages 11–13) · visual diagrams
+   Same folder system; the tab turns ink to mark the section change.
+   Icons are hand-drawn line symbols (sprite #i-*), no third-party icon set.
+   =========================================== */
+.tab.arch { background: var(--ink); color: var(--paper); }
+.tab.arch b { color: #F05A5F; }
+.ar .lbl2 { font-family: var(--font-type); font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ar .lbl2.red { color: var(--red); }
+.ic { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.ar svg.wires { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; max-width: none; max-height: none; overflow: visible; pointer-events: none; }
+.ar svg.wires path, .ar svg.wires line { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+.ar svg.wires .red { stroke: var(--red); }
+.ar svg.wires .fat { stroke-width: 7; }
+.ar svg.wires .dash { stroke-dasharray: 8 7; }
+.ar svg.wires .soft { stroke: rgba(33,28,23,.45); }
+.ar svg.wires text { font-family: var(--font-type); font-size: 15px; fill: var(--muted); }
+/* horizontal chip: icon disc + title + sub */
+.ar .chip { position: absolute; display: flex; align-items: center; gap: 14px; background: var(--paper-white); border: 1.5px solid rgba(33,28,23,.22); padding: 8px 14px; box-shadow: 0 6px 14px rgba(0,0,0,.14); }
+.ar .chip .ico { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--ink); color: var(--paper); padding: 10px; }
+.ar .chip b { display: block; font-size: 20px; line-height: 1.1; }
+.ar .chip small { display: block; font-size: 15.5px; color: var(--muted); line-height: 1.2; margin-top: 2px; }
+.ar .chip.hot { border: 3px solid var(--red); }
+.ar .chip.hot .ico, .ar .chip.redfill .ico { background: var(--red); }
+.ar .chip.redfill { background: var(--red); border-color: var(--red); color: #fff; }
+.ar .chip.redfill small { color: #ffd9d4; }
+.ar .chip.redfill .ico { background: #fff; color: var(--red); }
+.ar .chip.inkfill { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.ar .chip.inkfill small { color: #cbbfa8; }
+.ar .chip.inkfill .ico { background: var(--red); color: #fff; }
+/* vertical step: big icon disc over title + sub */
+.ar .step { position: absolute; width: 270px; text-align: center; }
+.ar .step .ico { display: block; width: 76px; height: 76px; margin: 0 auto 10px; border-radius: 50%; background: var(--paper-white); border: 3px solid var(--ink); color: var(--ink); padding: 17px; }
+.ar .step b { display: block; font-size: 21px; }
+.ar .step small { display: block; font-size: 15.5px; color: var(--muted); line-height: 1.25; margin-top: 3px; }
+
+/* page 11 · system diagram */
+.a1 .loop { position: absolute; left: 470px; top: 296px; width: 1300px; height: 252px; border: 3px dashed rgba(33,28,23,.38); border-radius: 18px; background: rgba(255,255,255,.18); }
+.a1 .loop .lbl2 { position: absolute; left: 20px; top: 12px; }
+.a1 .tag { position: absolute; font-family: var(--font-type); font-size: 15px; color: var(--muted); }
+.a1 .fastlbl { position: absolute; left: 150px; top: 734px; font-family: var(--font-type); font-size: 16px; letter-spacing: .06em; color: var(--red); }
+.a1 .consent { position: absolute; left: 150px; top: 944px; width: 1620px; font-size: 17px; line-height: 1.38; }
+.a1 .mini { position: absolute; right: 12px; top: 14px; width: 96px; height: 80px; }
+
+/* page 12 · flowchart + components */
+.a2 .fc { position: absolute; background: var(--paper-white); border: 2px solid var(--ink); padding: 8px 14px; font-size: 18px; line-height: 1.2; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 14px rgba(0,0,0,.14); }
+.a2 .fc .ico { flex: none; width: 34px; height: 34px; color: var(--ink); }
+.a2 .fc small { display: block; font-size: 15px; color: var(--muted); }
+.a2 .fc.start { border-radius: 30px; background: var(--ink); color: var(--paper); justify-content: center; font-weight: 700; }
+.a2 .fc.start .ico { color: #F05A5F; }
+.a2 .fc.ok { border-color: var(--ink); font-weight: 700; }
+.a2 .fc.bad { background: var(--red); border-color: var(--red); color: #fff; font-weight: 700; }
+.a2 .fc.bad .ico { color: #fff; }
+.a2 .fc.note { border: 2px dashed var(--muted); background: rgba(255,255,255,.35); font-size: 15.5px; box-shadow: none; }
+.a2 .dia { position: absolute; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 19px; text-align: center; line-height: 1.1; }
+.a2 .card { position: absolute; width: 355px; height: 172px; background: var(--paper-white); border-top: 5px solid var(--ink); padding: 12px 16px; box-shadow: 0 6px 14px rgba(0,0,0,.14); }
+.a2 .card .hd { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.a2 .card .ico { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: var(--paper); padding: 8px; }
+.a2 .card .hd b { font-size: 20px; }
+.a2 .card p { font-size: 15px; line-height: 1.32; }
+.a2 .card p i { font-style: normal; font-family: var(--font-type); font-size: 13px; color: var(--red); letter-spacing: .04em; margin-right: 6px; }
+.a2 .ifc { position: absolute; left: 1040px; top: 876px; width: 730px; height: 116px; background: var(--ink); color: var(--paper); padding: 10px 18px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; font-size: 14.5px; line-height: 1.45; }
+.a2 .ifc b { font-family: var(--font-type); font-weight: 400; color: #F0C987; margin-right: 6px; }
+.a2 .ifc .lbl2 { grid-column: 1 / -1; color: #E9B7A0; font-size: 13px; }
+
+/* page 13 · evidence, review, security, performance, disclosures */
+.a3 .pan { position: absolute; top: 296px; height: 266px; background: var(--paper); box-shadow: 0 8px 18px rgba(0,0,0,.18); padding: 14px 20px; }
+.a3 .pan h3 { font-size: 24px; font-weight: 700; }
+.a3 .blk { position: absolute; top: 62px; width: 168px; height: 120px; background: var(--paper-white); border: 2px solid var(--ink); padding: 8px 10px; }
+.a3 .blk b { font-size: 26px; display: block; line-height: 1; }
+.a3 .blk span { display: block; font-size: 15px; font-weight: 700; margin: 4px 0 6px; line-height: 1.15; }
+.a3 .blk code { display: block; font-family: var(--font-type); font-size: 12.5px; color: var(--muted); }
+.a3 .blk.seal { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.a3 .blk.seal code { color: #cbbfa8; }
+.a3 .lnk { position: absolute; top: 108px; width: 30px; height: 30px; color: var(--red); }
+.a3 .evrow { position: absolute; left: 20px; right: 20px; top: 196px; display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 14px; }
+.a3 .evrow div { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; line-height: 1.25; }
+.a3 .evrow .ico { flex: none; width: 28px; height: 28px; color: var(--ink); }
+.a3 .evrow .ico.r { color: var(--red); }
+.a3 .hr { position: absolute; top: 58px; width: 210px; text-align: center; }
+.a3 .hr .ico { display: block; width: 66px; height: 66px; margin: 0 auto 8px; border-radius: 50%; background: var(--ink); color: var(--paper); padding: 15px; }
+.a3 .hr .ico.r { background: var(--red); }
+.a3 .hr b { display: block; font-size: 19px; }
+.a3 .hr small { display: block; font-size: 14.5px; color: var(--muted); line-height: 1.25; margin-top: 2px; }
+.a3 .hrarw { position: absolute; top: 80px; font-size: 28px; color: var(--red); }
+.a3 .hook { position: absolute; left: 20px; right: 20px; bottom: 12px; font-size: 15.5px; padding-top: 8px; border-top: 1px dashed var(--rule); }
+.a3 .sec { position: absolute; top: 576px; width: 255px; height: 106px; background: var(--paper-white); border-left: 5px solid var(--red); padding: 9px 12px; box-shadow: 0 6px 12px rgba(0,0,0,.12); }
+.a3 .sec .hd { display: flex; gap: 8px; align-items: center; margin-bottom: 5px; }
+.a3 .sec .ico { flex: none; width: 26px; height: 26px; color: var(--red); }
+.a3 .sec b { font-size: 16.5px; line-height: 1.1; }
+.a3 .sec p { font-size: 14.5px; line-height: 1.25; }
+.a3 .sec p::before { content: "✓ "; color: var(--ink); font-weight: 700; }
+.a3 .perf { position: absolute; left: 150px; top: 694px; width: 1620px; height: 56px; display: flex; align-items: center; gap: 30px; padding: 0 24px; background: var(--ink); color: var(--paper); }
+.a3 .perf b { font-size: 29px; color: #fff; } .a3 .perf small { font-family: var(--font-type); font-size: 13.5px; color: #E9B7A0; margin-left: 6px; white-space: nowrap; } .a3 .perf > span { white-space: nowrap; }
+.a3 .perf p { margin-left: auto; font-size: 14.5px; max-width: 560px; line-height: 1.25; color: #d9d0bf; }
+.a3 .disc { left: 150px; top: 762px; width: 1620px; height: 232px; padding: 10px 22px; background: var(--paper-white); border-top: 5px solid var(--red); }
+.a3 .disc .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 5px; }
+.a3 .disc .grid b { display: block; font-size: 17.5px; margin-bottom: 1px; }
+.a3 .disc .grid span { font-size: 14.5px; line-height: 1.3; display: block; }
+.a3 .disc .src { margin-top: 7px; font-size: 13.5px; line-height: 1.28; color: var(--muted); }
+
+/* ===========================================
    PRESENTATION UI (outside the stage)
    =========================================== */
 .progress { position: fixed; left: 0; bottom: 0; height: 4px; background: var(--red); z-index: 1000; transition: width .4s var(--ease); }
@@ -387,6 +488,34 @@ body.editing .slide.active *:hover { outline: 1px dashed rgba(179,25,30,.5); }
 <button class="edit-toggle" id="editToggle" title="Edit mode (E)">EDIT TEXT</button>
 <div class="progress" id="progress"></div>
 
+<!-- Icon sprite (hand-drawn line icons used on the architecture pages) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></symbol>
+  <symbol id="i-ledger" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+  <symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6 4h12M6 9h12M6 4h3a5 5 0 0 1 0 10H6l9 7"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M16 16l5 5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.5 3.5 3.5 14.5 0 18M12 3c-3.5 3.5-3.5 14.5 0 18"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M11 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path d="M19 2v4M17 4h4"/></symbol>
+  <symbol id="i-graph" viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 6h9M6.3 8.2l4.4 7.6M17.7 8.2l-4.4 7.6"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v14c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M7 21h10M4 7h16M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z"/><path d="M12 8v5M12 16h.01"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14.5 8.5l2 2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></symbol>
+  <symbol id="i-siren" viewBox="0 0 24 24"><path d="M6 18v-6a6 6 0 0 1 12 0v6M4 21h16M12 2v2M4 6l1.5 1.5M20 6l-1.5 1.5M10 13a2 2 0 0 1 2-2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v8M7 6a8 8 0 1 0 10 0"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13 6l-2 12"/></symbol>
+</svg>
 <div class="deck-viewport">
 <main class="deck-stage" id="deckStage">
 
@@ -788,6 +917,189 @@ body.editing .slide.active *:hover { outline: 1px dashed rgba(179,25,30,.5); }
   <div class="stamp reveal" style="left:1450px;top:906px;font-size:34px;--rot:-5deg;--d:1.6s">CASE CLOSED<small>money never moved</small></div>
 
   <div class="desk-foot"><span>VeriFi AI · Track 03 · All scenario names and data are synthetic</span><a class="film-link" href="#" target="_blank" rel="noopener">▶ Watch the 60-second product film</a><span>10 / 10</span></div>
+</section>
+
+<!-- =====================================================
+     ARCHITECTURAL OVERVIEW 1/3: END-TO-END SYSTEM (diagram)
+     ===================================================== -->
+<section class="slide ar a1" style="--tab:0" aria-label="Architecture 1: End-to-end system">
+  <div class="tab arch">ARCHITECTURE · <b>1</b>/3</div>
+  <div class="folder"></div>
+  <div class="kicker reveal">ARCHITECTURAL OVERVIEW · <b>END-TO-END SYSTEM, INPUTS, DATA SOURCES, CONSENT &amp; PROVENANCE</b></div>
+  <h2 class="headline reveal" style="--d:.1s">Two loops: <mark>slow ingestion, fast decision gate</mark>.</h2>
+
+  <div class="loop reveal" style="--d:.25s"><span class="lbl2">Slow loop · background worker · seconds</span></div>
+
+  <svg class="wires reveal" style="--d:.35s" viewBox="0 0 1920 1080">
+    <defs>
+      <marker id="a1k" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#211C17" stroke="none"/></marker>
+      <marker id="a1r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#B3191E" stroke="none"/></marker>
+      <marker id="a1g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="rgba(33,28,23,.55)" stroke="none"/></marker>
+    </defs>
+    <!-- sources into the slow loop -->
+    <path d="M420 357 C 505 357 505 376 576 376" marker-end="url(#a1k)"/>
+    <path d="M420 439 C 510 439 510 380 576 378" marker-end="url(#a1k)"/>
+    <path d="M420 521 C 515 521 515 384 576 380" marker-end="url(#a1k)"/>
+    <!-- slow loop steps -->
+    <path d="M671 376 L887 376" marker-end="url(#a1k)"/>
+    <path d="M981 376 L1197 376" marker-end="url(#a1k)"/>
+    <path d="M1291 376 L1507 376" marker-end="url(#a1k)"/>
+    <!-- writes facts to stores -->
+    <path d="M690 548 L690 596" marker-end="url(#a1k)"/>
+    <path d="M1100 548 L1100 596" marker-end="url(#a1k)"/>
+    <text x="1112" y="578">writes facts</text>
+    <!-- precomputed facts feed the decision -->
+    <path class="dash" d="M690 712 L690 756" marker-end="url(#a1k)"/>
+    <text x="702" y="742">precomputed facts</text>
+    <!-- fast loop -->
+    <path class="red fat" d="M452 810 L548 810" marker-end="url(#a1r)"/>
+    <path d="M920 810 C 990 810 990 768 1054 768" marker-end="url(#a1k)"/>
+    <path class="red" d="M920 810 C 990 810 990 833 1054 833" marker-end="url(#a1r)"/>
+    <path class="red" d="M920 810 C 990 810 990 898 1054 898" marker-end="url(#a1r)"/>
+    <!-- every outcome is signed into evidence -->
+    <path class="dash soft" d="M1462 833 C 1530 833 1530 790 1530 716" marker-end="url(#a1g)"/>
+    <text x="1546" y="790">every step</text><text x="1546" y="810">signed &amp; chained</text>
+  </svg>
+
+  <span class="lbl2 reveal" style="position:absolute;left:150px;top:294px;--d:.2s">Sources</span>
+  <div class="chip reveal" style="left:150px;top:322px;width:270px;--d:.2s"><span class="ico"><svg class="ic"><use href="#i-mail"/></svg></span><span><b>Email</b><small>.eml · Graph · Gmail API</small></span></div>
+  <div class="chip reveal" style="left:150px;top:404px;width:270px;--d:.25s"><span class="ico"><svg class="ic"><use href="#i-video"/></svg></span><span><b>Meeting</b><small>metadata + transcript</small></span></div>
+  <div class="chip reveal" style="left:150px;top:486px;width:270px;--d:.3s"><span class="ico"><svg class="ic"><use href="#i-ledger"/></svg></span><span><b>Vendor master</b><small>registered bank accounts</small></span></div>
+
+  <div class="step reveal" style="left:490px;top:338px;--d:.4s"><span class="ico"><svg class="ic"><use href="#i-search"/></svg></span><b>Parse headers</b><small>SPF · DKIM · DMARC results</small></div>
+  <div class="step reveal" style="left:800px;top:338px;--d:.45s"><span class="ico"><svg class="ic"><use href="#i-lock"/></svg></span><b>Tokenize</b><small>account, IFSC, phone (HMAC) → encrypted vault</small></div>
+  <div class="step reveal" style="left:1110px;top:338px;--d:.5s"><span class="ico"><svg class="ic"><use href="#i-globe"/></svg></span><b>Domain intel</b><small>lookalikes (dnstwist) + domain age (RDAP)</small></div>
+  <div class="step reveal" style="left:1420px;top:338px;--d:.55s"><span class="ico"><svg class="ic"><use href="#i-spark"/></svg></span><b>Claude on Bedrock</b><small>intent, urgency, authority claims · additive only</small></div>
+
+  <div class="chip reveal" style="left:475px;top:600px;width:430px;height:110px;--d:.6s"><span class="ico"><svg class="ic"><use href="#i-graph"/></svg></span><span><b>Instruction Lineage Graph</b><small>Neo4j · tokens only<br>every fact keeps its source</small></span>
+    <svg class="mini" viewBox="0 0 120 84"><path d="M14 18 L58 12 L104 30 M58 12 L46 62 L96 70" fill="none" stroke="#B3191E" stroke-width="2.5"/><circle cx="14" cy="18" r="7" fill="#211C17"/><circle cx="58" cy="12" r="7" fill="#211C17"/><circle cx="104" cy="30" r="7" fill="#211C17"/><circle cx="46" cy="62" r="7" fill="#211C17"/><circle cx="96" cy="70" r="9" fill="#B3191E"/></svg></div>
+  <div class="chip reveal" style="left:935px;top:600px;width:330px;height:110px;--d:.65s"><span class="ico"><svg class="ic"><use href="#i-db"/></svg></span><span><b>PostgreSQL</b><small>system of record · vault · job queue</small></span></div>
+  <div class="chip reveal" style="left:1295px;top:600px;width:475px;height:110px;--d:.7s"><span class="ico"><svg class="ic"><use href="#i-shield"/></svg></span><span><b>S3 Object Lock + AWS KMS</b><small>signed, write-once evidence checkpoints</small></span></div>
+
+  <div class="fastlbl reveal" style="--d:.75s">FAST LOOP · DECISION ≤ 300 MS · NO LLM CALL</div>
+  <div class="chip hot reveal" style="left:150px;top:770px;width:300px;height:80px;--d:.8s"><span class="ico"><svg class="ic"><use href="#i-rupee"/></svg></span><span><b>Payment release request</b><small>ERP pre-release hook</small></span></div>
+  <div class="chip inkfill reveal" style="left:560px;top:760px;width:360px;height:100px;--d:.85s"><span class="ico"><svg class="ic"><use href="#i-scale"/></svg></span><span><b>Decide</b><small>provenance query + rules R1–R7 + bounded score</small></span></div>
+  <div class="chip reveal" style="left:1060px;top:740px;width:400px;height:56px;--d:.9s"><span class="ico" style="width:38px;height:38px;padding:8px"><svg class="ic"><use href="#i-check"/></svg></span><span><b style="font-size:18px">T0 · released</b><small style="font-size:14.5px">webhook back to the ERP</small></span></div>
+  <div class="chip hot reveal" style="left:1060px;top:805px;width:400px;height:56px;--d:.95s"><span class="ico" style="width:38px;height:38px;padding:8px"><svg class="ic"><use href="#i-phone"/></svg></span><span><b style="font-size:18px">T1 / T2 · confirm on own phone</b><small style="font-size:14.5px">real authority, passkey bound to the payment</small></span></div>
+  <div class="chip redfill reveal" style="left:1060px;top:870px;width:400px;height:56px;--d:1s"><span class="ico" style="width:38px;height:38px;padding:8px"><svg class="ic"><use href="#i-stop"/></svg></span><span><b style="font-size:18px">Denied / expired · held</b><small style="font-size:14.5px">analyst → incident → 1930 pack</small></span></div>
+
+  <p class="consent reveal" style="--d:1.1s"><b>Consent &amp; provenance:</b> only customer-authorised finance mailboxes and meetings are ingested, under a DPA (the prototype uses synthetic data). Every graph fact keeps its source message and time; raw identifiers never leave the vault.</p>
+
+  <div class="desk-foot"><span>VeriFi AI · Track 03 · All scenario names and data are synthetic</span><a class="film-link" href="#" target="_blank" rel="noopener">▶ Watch the 60-second product film</a><span>ARCH 1 / 3</span></div>
+</section>
+
+<!-- =====================================================
+     ARCHITECTURAL OVERVIEW 2/3: DECISION FLOWCHART + COMPONENTS
+     ===================================================== -->
+<section class="slide ar a2" style="--tab:1" aria-label="Architecture 2: Decision flow and components">
+  <div class="tab arch">ARCHITECTURE · <b>2</b>/3</div>
+  <div class="folder"></div>
+  <div class="kicker reveal">ARCHITECTURAL OVERVIEW · <b>COMPONENTS, MODELS &amp; RULES, DECISION FLOW &amp; ESCALATION</b></div>
+  <h2 class="headline reveal" style="--d:.1s">How a payment moves, and <mark>what decides it</mark>.</h2>
+
+  <span class="lbl2 reveal" style="position:absolute;left:150px;top:294px;--d:.2s">Decision flow</span>
+  <svg class="wires reveal" style="--d:.3s" viewBox="0 0 1920 1080">
+    <defs>
+      <marker id="a2k" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#211C17" stroke="none"/></marker>
+      <marker id="a2r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#B3191E" stroke="none"/></marker>
+    </defs>
+    <path d="M560 352 L560 380" marker-end="url(#a2k)"/>
+    <path d="M560 444 L560 462" marker-end="url(#a2k)"/>
+    <polygon points="560,466 622,528 560,590 498,528" fill="#FBF8F1" stroke="#211C17" stroke-width="2.5"/>
+    <path d="M498 528 L404 528" marker-end="url(#a2k)"/><text x="436" y="518">T0</text>
+    <path class="red" d="M560 590 L560 616" marker-end="url(#a2r)"/><text x="574" y="610">T1 / T2</text>
+    <path d="M560 692 L560 712" marker-end="url(#a2k)"/>
+    <polygon points="560,716 616,772 560,828 504,772" fill="#FBF8F1" stroke="#211C17" stroke-width="2.5"/>
+    <path d="M616 772 L756 772" marker-end="url(#a2k)"/><text x="668" y="762">yes</text>
+    <path class="red" d="M504 772 L404 772" marker-end="url(#a2r)"/><text x="412" y="762">deny /</text><text x="412" y="796">timeout</text>
+    <path class="red" d="M275 799 L275 854" marker-end="url(#a2r)"/>
+    <path class="dash soft" d="M790 656 L813 656"/>
+  </svg>
+  <div class="fc start reveal" style="left:330px;top:298px;width:460px;height:54px;--d:.3s"><span class="ico"><svg class="ic"><use href="#i-rupee"/></svg></span>Payment release request (ERP)</div>
+  <div class="fc reveal" style="left:330px;top:382px;width:460px;height:62px;--d:.35s"><span class="ico"><svg class="ic"><use href="#i-scale"/></svg></span><span><b>Evaluate</b><small>provenance facts + rules R1–R7 + bounded score</small></span></div>
+  <div class="dia reveal" style="left:498px;top:466px;width:124px;height:124px;--d:.4s">Tier?</div>
+  <div class="fc ok reveal" style="left:150px;top:501px;width:250px;height:54px;--d:.45s"><span class="ico"><svg class="ic"><use href="#i-check"/></svg></span><span>RELEASED<small style="font-weight:400">webhook to the ERP</small></span></div>
+  <div class="fc reveal" style="left:330px;top:620px;width:460px;height:72px;border-color:var(--red);--d:.5s"><span class="ico" style="color:var(--red)"><svg class="ic"><use href="#i-phone"/></svg></span><span><b>Ask the real authority</b><small>passkey on their own phone · T2: two confirmers + cooling-off</small></span></div>
+  <div class="fc note reveal" style="left:815px;top:604px;width:200px;height:104px;--d:.55s"><span class="ico" style="width:28px;height:28px"><svg class="ic"><use href="#i-clock"/></svg></span><span>No answer in 30 min (T1) / 60 min (T2)? Next authority or a delegate.</span></div>
+  <div class="dia reveal" style="left:504px;top:716px;width:112px;height:112px;font-size:17px;--d:.6s">Approved?</div>
+  <div class="fc ok reveal" style="left:760px;top:745px;width:240px;height:54px;--d:.65s"><span class="ico"><svg class="ic"><use href="#i-check"/></svg></span>RELEASED</div>
+  <div class="fc bad reveal" style="left:150px;top:745px;width:250px;height:54px;--d:.65s"><span class="ico"><svg class="ic"><use href="#i-stop"/></svg></span>HELD FOR REVIEW</div>
+  <div class="fc reveal" style="left:150px;top:858px;width:640px;height:72px;--d:.7s"><span class="ico"><svg class="ic"><use href="#i-user"/></svg></span><span><b>Analyst</b> (alerted on every T2 and hold)<small>release needs the denier’s re-approval · reject → incident + 1930 pack</small></span></div>
+
+  <span class="lbl2 reveal" style="position:absolute;left:1040px;top:294px;--d:.3s">Components</span>
+  <div class="card reveal" style="left:1040px;top:322px;--d:.35s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-search"/></svg></span><b>Ingestion worker</b></div>
+    <p><i>USES</i>Header parser, Presidio + Indian recognizers, dnstwist, RDAP</p><p><i>STORES</i>S3 (raw, 90 days), vault</p><p><i>I/O</i>Postgres job queue → graph facts</p></div>
+  <div class="card reveal" style="left:1415px;top:322px;--d:.4s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-spark"/></svg></span><b>LLM extractor</b></div>
+    <p><i>USES</i>Claude on Amazon Bedrock, JSON-schema output, additive only</p><p><i>STORES</i>nothing</p><p><i>I/O</i>Bedrock API → intent, urgency, authority claims</p></div>
+  <div class="card reveal" style="left:1040px;top:506px;--d:.45s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-graph"/></svg></span><b>Provenance service</b></div>
+    <p><i>USES</i>Cypher path queries (account → source)</p><p><i>STORES</i>Neo4j</p><p><i>I/O</i>internal → facts per account</p></div>
+  <div class="card reveal" style="left:1415px;top:506px;--d:.5s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-scale"/></svg></span><b>Policy engine</b></div>
+    <p><i>USES</i>Rules R1–R7 + bounded score, versioned YAML</p><p><i>STORES</i>Postgres</p><p><i>I/O</i>pure function → tier + reasons</p></div>
+  <div class="card reveal" style="left:1040px;top:690px;border-top-color:var(--red);--d:.55s"><div class="hd"><span class="ico" style="background:var(--red)"><svg class="ic"><use href="#i-key"/></svg></span><b>Confirmation service</b></div>
+    <p><i>USES</i>WebAuthn (py_webauthn), approval matrix</p><p><i>STORES</i>Postgres</p><p><i>I/O</i>REST + approver app → signed decision</p></div>
+  <div class="card reveal" style="left:1415px;top:690px;--d:.6s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-shield"/></svg></span><b>Evidence service</b></div>
+    <p><i>USES</i>SHA-256 chain, KMS ECDSA signatures</p><p><i>STORES</i>Postgres + S3 Object Lock</p><p><i>I/O</i>REST + CLI verifier → verifiable record, incident pack</p></div>
+  <div class="ifc reveal" style="--d:.7s"><span class="lbl2">Interfaces &amp; deployment</span>
+    <span><b>ERP</b>POST /v1/payments/evaluate (HMAC) · signed webhooks</span><span><b>Audit</b>GET /v1/evidence/verify · CLI verifier</span>
+    <span><b>Sources</b>POST /v1/ingest/email · /v1/ingest/meeting</span><span><b>People</b>approver app (passkey) · analyst console</span>
+    <span style="grid-column:1/-1"><b>Deploy</b>API + worker container, Postgres, Neo4j AuraDB, S3 / KMS, Bedrock (AWS Mumbai)</span></div>
+
+  <div class="desk-foot"><span>VeriFi AI · Track 03 · All scenario names and data are synthetic</span><a class="film-link" href="#" target="_blank" rel="noopener">▶ Watch the 60-second product film</a><span>ARCH 2 / 3</span></div>
+</section>
+
+<!-- =====================================================
+     ARCHITECTURAL OVERVIEW 3/3: EVIDENCE, REVIEW, SECURITY, PERFORMANCE + DISCLOSURES
+     ===================================================== -->
+<section class="slide ar a3" style="--tab:2" aria-label="Architecture 3: Evidence, review, security, disclosures">
+  <div class="tab arch">ARCHITECTURE · <b>3</b>/3</div>
+  <div class="folder"></div>
+  <div class="kicker reveal">ARCHITECTURAL OVERVIEW · <b>HUMAN REVIEW, EVIDENCE, SECURITY, PERFORMANCE &amp; DISCLOSURES</b></div>
+  <h2 class="headline reveal" style="--d:.1s">Humans decide, every step is signed, <mark>failures are safe</mark>.</h2>
+
+  <div class="pan reveal" style="left:150px;width:860px;--d:.2s"><h3>Evidence path · tamper-evident by design</h3>
+    <div class="blk" style="left:20px"><b>#41</b><span>Decision · T2</span><code>prev 77d0…19b4</code><code>hash 4c1e…a07f</code></div>
+    <span class="lnk" style="left:190px"><svg class="ic"><use href="#i-link"/></svg></span>
+    <div class="blk" style="left:222px"><b>#42</b><span>CFO deny · passkey</span><code>prev 4c1e…a07f</code><code>hash 9b33…e21c</code></div>
+    <span class="lnk" style="left:392px"><svg class="ic"><use href="#i-link"/></svg></span>
+    <div class="blk" style="left:424px"><b>#43</b><span>Payment held</span><code>prev 9b33…e21c</code><code>hash e5a2…c8d1</code></div>
+    <span class="lnk" style="left:594px"><svg class="ic"><use href="#i-link"/></svg></span>
+    <div class="blk seal" style="left:626px"><b>✓ KMS</b><span>Signed checkpoint</span><code>head e5a2…c8d1</code><code>→ S3 Object Lock</code></div>
+    <div class="evrow">
+      <div><span class="ico"><svg class="ic"><use href="#i-clock"/></svg></span>Checkpoints at least every 15 min and on every hold</div>
+      <div><span class="ico"><svg class="ic"><use href="#i-lock"/></svg></span>Write-once storage; KMS ECDSA signatures</div>
+      <div><span class="ico r"><svg class="ic"><use href="#i-alert"/></svg></span>Verifier recomputes the chain and every passkey signature: one changed byte → BROKEN</div>
+    </div></div>
+
+  <div class="pan reveal" style="left:1040px;width:730px;--d:.3s"><h3>Human review, notifications &amp; reporting</h3>
+    <div class="hr" style="left:20px"><span class="ico"><svg class="ic"><use href="#i-phone"/></svg></span><b>Approver app</b><small>pending requests · polling → Web Push · SMS carries only a link</small></div>
+    <span class="hrarw" style="left:236px">→</span>
+    <div class="hr" style="left:262px"><span class="ico"><svg class="ic"><use href="#i-user"/></svg></span><b>Analyst queue</b><small>by tier, amount, age · release / reject with a written reason</small></div>
+    <span class="hrarw" style="left:478px">→</span>
+    <div class="hr" style="left:504px"><span class="ico r"><svg class="ic"><use href="#i-siren"/></svg></span><b>1930 playbook</b><small>call 1930 if money left · file at cybercrime.gov.in · block domain · alert the executive</small></div>
+    <div class="hook">Signed webhooks tell the ERP: <b>released · held · rejected</b></div></div>
+
+  <div class="sec reveal" style="left:150px;--d:.4s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-key"/></svg></span><b>Forged / replayed passkey</b></div><p>py_webauthn checks; single-use challenge</p></div>
+  <div class="sec reveal" style="left:423px;--d:.45s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-user"/></svg></span><b>Rogue enrollment</b></div><p>One-time admin link; user alerted; 2 admins</p></div>
+  <div class="sec reveal" style="left:696px;--d:.5s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-code"/></svg></span><b>Prompt injection</b></div><p>LLM off the decision path; additive only</p></div>
+  <div class="sec reveal" style="left:969px;--d:.55s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-globe"/></svg></span><b>Lookalike passes SPF / DKIM</b></div><p>dnstwist variants + domain age</p></div>
+  <div class="sec reveal" style="left:1242px;--d:.6s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-bell"/></svg></span><b>Alert flooding</b></div><p>Signals tied to the paid account</p></div>
+  <div class="sec reveal" style="left:1515px;--d:.65s"><div class="hd"><span class="ico"><svg class="ic"><use href="#i-power"/></svg></span><b>Outage / data leak</b></div><p>Fail-safe step-up; tokens; tenant isolation</p></div>
+
+  <div class="perf reveal" style="--d:.7s"><span class="lbl2" style="color:#E9B7A0">Performance</span>
+    <span><b>≤ 300 ms</b><small>decision p95</small></span><span><b>&lt; 60 s</b><small>ingestion lag</small></span><span><b>&lt; 60 s</b><small>median confirm</small></span><span><b>&lt; 3%</b><small>step-up rate</small></span>
+    <p>Validated by a load test, 14 red-team regressions, 7 scenarios with exact expected scores, an LLM eval set, and a 60-day shadow-mode pilot.</p></div>
+
+  <div class="paper disc reveal" style="--d:.8s"><span class="lbl2 red">Disclosures · AI-generated content, datasets, models &amp; third-party assets</span>
+    <div class="grid">
+      <div><b>AI-generated content</b><span>This deck, its diagrams, our design documents and the product film (visuals and its original synthesized soundtrack) were made with AI assistance (Anthropic Claude, via Claude Code) and reviewed and edited by the team. Worked-example scores are computed, not estimated.</span></div>
+      <div><b>Datasets</b><span>Synthetic only: Kestrel Infra Ltd, its people, vendors, emails, meetings and payments are fictional. Public: news reporting on the Arup case. No confidential bank, customer or platform data. No dataset is used for training.</span></div>
+      <div><b>Models</b><span>Claude on Amazon Bedrock (anthropic.claude-opus-5-5) for text extraction only; nothing is trained or fine-tuned. Detector-agnostic by design: the deepfake score is a labelled simulated input, and any detector can plug in as one weak signal.</span></div>
+      <div><b>Third-party assets</b><span>Open source: FastAPI, Next.js, Neo4j, PostgreSQL, py_webauthn, SimpleWebAuthn, Microsoft Presidio, dnstwist, Cytoscape.js. Cloud: AWS Bedrock, S3, KMS. Fonts: Archivo Narrow, Special Elite, Saira Stencil One, Caveat (Google Fonts, SIL OFL). Icons drawn by us. No stock footage or music.</span></div>
+    </div>
+    <p class="src"><b>Sources:</b> Arup case: South China Morning Post (May 2024), Construction Briefing (2024). RBI beneficiary name lookup for NEFT / RTGS: RBI circular, 30 Dec 2024 (effective 1 Apr 2025). DPDP Rules 2025: notified Nov 2025 (Hogan Lovells; AZB &amp; Partners summaries). Competitor descriptions are from public product positioning, as of Oct 2026.</p>
+  </div>
+
+  <div class="desk-foot"><span>VeriFi AI · Track 03 · All scenario names and data are synthetic</span><a class="film-link" href="#" target="_blank" rel="noopener">▶ Watch the 60-second product film</a><span>ARCH 3 / 3</span></div>
 </section>
 
 </main>
